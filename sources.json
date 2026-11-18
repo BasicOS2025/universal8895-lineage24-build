@@ -1,0 +1,58 @@
+[
+  {
+    "repository": "android_device_samsung_universal8895-common",
+    "revision": "1a7728974b5efd1e4cfc9bd1ee5870229bb7154e",
+    "upstream_commit": "57bbd96d96622e5e7aaf968007b3a771120450a1",
+    "upstream": "android_device_samsung_universal8895-common",
+    "branch": "lineage-23.2",
+    "path": "device/samsung/universal8895-common"
+  },
+  {
+    "repository": "android_device_samsung_dreamlte",
+    "revision": "ef2fdff13338432e501c4d1c58ee10ec3a339722",
+    "upstream_commit": "996ed02aab7f0fc7eba8e5675d8515f323ac810a",
+    "upstream": "android_device_samsung_dreamlte",
+    "branch": "lineage-23.2",
+    "path": "device/samsung/dreamlte"
+  },
+  {
+    "repository": "android_device_samsung_dream2lte",
+    "revision": "9300cd6d52cedfda9349eb83e3a33b44be5c6ce0",
+    "upstream_commit": "e59d1afe6876fdd3153cc54b0e7fd2f577cb4b15",
+    "upstream": "android_device_samsung_dream2lte",
+    "branch": "lineage-23.2",
+    "path": "device/samsung/dream2lte"
+  },
+  {
+    "repository": "android_device_samsung_greatlte",
+    "revision": "a3097724e868c380b04f9d1b4f324deafb4c6c99",
+    "upstream_commit": "be87b50edb07b5bd067f7d65901cfd70453803fb",
+    "upstream": "android_device_samsung_greatlte",
+    "branch": "lineage-23.2",
+    "path": "device/samsung/greatlte"
+  },
+  {
+    "repository": "android_hardware_samsung_universal8895",
+    "revision": "ca1933d4e834ff8e82ad178be09bb332d217110a",
+    "upstream_commit": "2abfdb1a286b11bd29140ae8ae61ac6ad0e81fb1",
+    "upstream": "android_hardware_samsung",
+    "branch": "lineage-23.0",
+    "path": "hardware/samsung"
+  },
+  {
+    "repository": "android_kernel_samsung_universal8895",
+    "revision": "724c6c732014615250afa1c940fe17899b077d72",
+    "upstream_commit": "32aa592753ddb76be7ed66e6cd887799bc14a04f",
+    "upstream": "kernel_samsung_universal8895",
+    "branch": "lineage-23.2",
+    "path": "kernel/samsung/universal8895"
+  },
+  {
+    "repository": "proprietary_vendor_samsung_universal8895",
+    "revision": "de4907046a7ef27341da87acf0aa2d4572c44aee",
+    "upstream_commit": "9cf67bc7994a40483c8b768ea727dcd0908aa73e",
+    "upstream": "proprietary_vendor_samsung",
+    "branch": "lineage-23.0",
+    "path": "vendor/samsung"
+  }
+]
