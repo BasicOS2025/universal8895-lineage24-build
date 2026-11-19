@@ -17,7 +17,7 @@ ccache -M 4G
 export BUILD_USERNAME=BasicOS2025 BUILD_HOSTNAME=github-actions
 export ALLOW_MISSING_DEPENDENCIES=false
 # Reduce Go analysis memory spikes on the free 16 GB runner.
-export GOMEMLIMIT=10GiB GOGC=50 GOMAXPROCS=2
+export GOMEMLIMIT=10GiB GOGC=50 GOMAXPROCS=1
 for attempt in $(seq 1 20); do
   python3 "$control/ci/apply-port.py" "$source_dir"
   set +e
@@ -28,7 +28,7 @@ for attempt in $(seq 1 20); do
     source build/envsetup.sh
     source vendor/lineage/vars/aosp_target_release
     lunch "lineage_dreamlte-${aosp_target_release}-userdebug"
-    m -j2 bacon
+    m -j1 bacon
   ) 2>&1 | tee "$logs/dreamlte-attempt-${attempt}.log"
   result=${PIPESTATUS[0]}
   set -e

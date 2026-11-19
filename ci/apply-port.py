@@ -37,3 +37,11 @@ if reverse.returncode != 0:
     subprocess.run(['git', '-C', str(soong), 'apply', '--check', str(patch)], check=True)
     subprocess.run(['git', '-C', str(soong), 'apply', str(patch)], check=True)
 print('Applied legacy system/vendor Make packaging compatibility', flush=True)
+
+# A running control shell may have loaded its previous -j setting already.
+# Soong reads NINJA_ARGS after its command-line options; keep in-place retries at one job.
+envsetup = source / 'build/envsetup.sh'
+text = envsetup.read_text()
+marker = '# CI single-job memory limit'
+if marker not in text:
+    envsetup.write_text(text + '\n' + marker + '\nexport NINJA_ARGS="${NINJA_ARGS:-} -j1"\nexport GOMAXPROCS=1\n')

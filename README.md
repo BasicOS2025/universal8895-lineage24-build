@@ -99,7 +99,11 @@ The 16 GB runner reported repeated memory stalls before a SIGTERM (exit 143).
 That signal alone does not identify whether storage protection, the runner or
 another source terminated the process. New runs reserve 4 GB host-filesystem
 swap before allocating the compressed volume, limit the Go analysis heap softly
-to 10 GiB with more frequent collection, and compile Android with two jobs.
+to 10 GiB with more frequent collection, and compile Android and the legacy kernel with one job.
 Memory, swap and process-exit diagnostics are retained alongside disk snapshots.
 A new concurrency group allows recovery from a terminated process whose Actions
 job has not yet finalized; running jobs are not cancelled by this change.
+
+Single-job settings also cap Go parallelism at one. In-place retries export
+NINJA_ARGS=-j1 after envsetup, covering a control shell that loaded an earlier
+job count. Already-running processes cannot receive this setting retroactively.
