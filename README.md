@@ -19,7 +19,7 @@ configuration, and select legacy gralloc/ION platform paths. No successful Andro
 17 ROM build, recovery test, phone boot, or hardware validation is claimed.
 
 Remaining work includes adapting the GCC 15.2 kernel build to the Android 17 build
-integration, reviewing custom boot tools and duplicate host modules, confirming
+integration, confirming
 the custom Samsung HAL dependencies, and resolving additional IMS package sources.
 The manifest records source selection; it is not a claim that the port builds.
 
@@ -35,3 +35,11 @@ backports from that successful build are committed. S8+/Note8 full kernel builds
 Android 17 ROM builds and phone boot/root testing remain outstanding.
 
 https://github.com/BasicOS2025/android_kernel_samsung_universal8895/actions/runs/44379364933
+
+## Boot packaging
+
+The common tree now supplies uniquely named legacy Samsung DTBH packers instead
+of passing unsupported --dt flags to modern mkbootimg. A host CI checks 70-DTB
+tables, payload offsets, legacy header load addresses and SHA-1, and malformed
+first-stage ramdisk rejection using the 8895 SYSTEM block path. This does not
+replace a full ROM build or a physical boot test.
