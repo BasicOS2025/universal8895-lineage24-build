@@ -118,3 +118,7 @@ disconnection does not end compilation. Failures wait for control-repo fixes and
 reuse objects. Results and compressed logs are copied to ~/s8-results on the boot
 disk before the VM is stopped. Local SSD workspace is disposable; download the
 verified ROM and logs before shutdown. This script does not stop the VM itself.
+
+The cloud container permits 110 GiB RAM plus up to 120 GiB host swap when the
+host supplies it. On the active VM the user requested a 120 GiB zstd zram device
+with a 125 GiB physical-consumption cap; this cap does not preallocate RAM.
