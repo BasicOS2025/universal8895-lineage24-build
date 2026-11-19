@@ -1,0 +1,15 @@
+--- a/fsgen/filesystem_creator.go
++++ b/fsgen/filesystem_creator.go
+@@ -172,6 +172,12 @@
+ }
+ 
+ func shouldEnableFilesystemCreator(ctx android.ConfigContext) bool {
++	// Legacy non-Treble products are packaged by Make with vendor under system.
++	// fsgen currently requests core image variants for those vendor-only modules.
++	if ctx.Config().KatiEnabled() && !ctx.Config().UseSoongSystemImage() &&
++		ctx.DeviceConfig().VendorPath() == "system/vendor" {
++		return false
++	}
+ 	if ctx.Config().HasUnbundledBuildApps() || ctx.Config().UnbundledBuild() {
+ 		// unbundled builds don't build a device. The android_device's dist artifacts
+ 		// would conflict with the dist artifacts from the unbundled singleton.

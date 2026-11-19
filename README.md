@@ -84,3 +84,11 @@ terminates the build cleanly before storage exhaustion kills the Actions agent.
 Compression increases effective capacity but does not guarantee this free runner
 has enough space for the complete Android 17 build. A terminated runner's full
 source/output tree cannot be resumed; only a successfully saved cache survives.
+
+The build-control patch `patches/soong-legacy-system-vendor.patch` keeps Make
+image generation for Kati builds whose vendor path is system/vendor, provided
+a Soong-defined system image is not selected. The experimental fsgen comparison
+otherwise requests non-existent core variants of vendor-only health and STL
+modules. Full Soong-only builds and separate vendor partitions retain the
+original behavior. Actual Make packaging and its dependency checks remain active.
+The patch is applied idempotently before each in-place retry.

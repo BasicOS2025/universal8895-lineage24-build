@@ -22,3 +22,12 @@ text += "TARGET_FORCE_PREBUILT_KERNEL := true\n"
 text += "TARGET_PREBUILT_KERNEL := out/kernel-ci/arch/arm64/boot/Image\n"
 text += "EXYNOS8895_DTB_DIR := $(abspath out/kernel-ci/arch/arm64/boot/dts/exynos)\n"
 board.write_text(text)
+
+# Keep Make image packaging on the legacy non-Treble system/vendor layout.
+soong = source / 'build/soong'
+patch = control / 'patches/soong-legacy-system-vendor.patch'
+reverse = subprocess.run(['git', '-C', str(soong), 'apply', '--reverse', '--check', str(patch)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if reverse.returncode != 0:
+    subprocess.run(['git', '-C', str(soong), 'apply', '--check', str(patch)], check=True)
+    subprocess.run(['git', '-C', str(soong), 'apply', str(patch)], check=True)
+print('Applied legacy system/vendor Make packaging compatibility', flush=True)
