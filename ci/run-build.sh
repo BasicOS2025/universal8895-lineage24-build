@@ -8,6 +8,8 @@ build_pid=$!
 monitor() {
   while kill -0 "$build_pid" 2>/dev/null; do
     df -h "$volume" "$RUNNER_TEMP" > "$logs/disk-latest.txt"
+    free -h > "$logs/memory-latest.txt"
+    swapon --show > "$logs/swap-latest.txt"
     pool_free=$(df -B1 --output=avail "$volume" | tail -n1)
     host_free=$(df -B1 --output=avail "$RUNNER_TEMP" | tail -n1)
     if (( pool_free < 4*1024*1024*1024 || host_free < 2*1024*1024*1024 )); then
@@ -26,4 +28,7 @@ set +e
 wait "$build_pid"
 result=$?
 set -e
+printf 'Build process exit: %s\n' "$result" | tee "$logs/process-exit.txt"
+free -h > "$logs/memory-latest.txt"
+swapon --show > "$logs/swap-latest.txt"
 exit "$result"

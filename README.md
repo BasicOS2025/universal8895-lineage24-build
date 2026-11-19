@@ -92,3 +92,14 @@ otherwise requests non-existent core variants of vendor-only health and STL
 modules. Full Soong-only builds and separate vendor partitions retain the
 original behavior. Actual Make packaging and its dependency checks remain active.
 The patch is applied idempotently before each in-place retry.
+
+## Memory pressure
+
+The 16 GB runner reported repeated memory stalls before a SIGTERM (exit 143).
+That signal alone does not identify whether storage protection, the runner or
+another source terminated the process. New runs reserve 4 GB host-filesystem
+swap before allocating the compressed volume, limit the Go analysis heap softly
+to 10 GiB with more frequent collection, and compile Android with two jobs.
+Memory, swap and process-exit diagnostics are retained alongside disk snapshots.
+A new concurrency group allows recovery from a terminated process whose Actions
+job has not yet finalized; running jobs are not cancelled by this change.
