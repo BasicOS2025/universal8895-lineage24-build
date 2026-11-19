@@ -6,7 +6,7 @@ source_dir="$root/android"
 logs="$root/logs"
 export HOME="$root/home"
 export CCACHE_DIR="$root/ccache" USE_CCACHE=1 CCACHE_EXEC=/usr/bin/ccache
-export BUILD_JOBS="${BUILD_JOBS:-16}" KERNEL_JOBS="${KERNEL_JOBS:-16}"
+export BUILD_JOBS="${BUILD_JOBS:-28}" KERNEL_JOBS="${KERNEL_JOBS:-28}"
 export GOMEMLIMIT=80GiB GOGC=100 GOMAXPROCS="$BUILD_JOBS"
 export BUILD_USERNAME=BasicOS2025 BUILD_HOSTNAME=gcp-s8
 export ALLOW_MISSING_DEPENDENCIES=false

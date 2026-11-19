@@ -63,10 +63,14 @@ print('Applied legacy system/vendor Make packaging compatibility', flush=True)
 
 # Respect a cloud-specific job count while keeping the free-runner default at one.
 jobs = int(os.environ.get('BUILD_JOBS', '1'))
+# Cloud retries run inside an already-started shell with the original env.
+if os.environ.get('BUILD_ROOT') == '/workspace':
+    jobs = int((control / 'ci/cloud-jobs.txt').read_text().strip())
 if not 1 <= jobs <= 32:
     raise ValueError('BUILD_JOBS must be between 1 and 32')
 envsetup = source / 'build/envsetup.sh'
 marker = '# CI single-job memory limit'
 text = envsetup.read_text().split(marker)[0].rstrip()
 envsetup.write_text(text + '\n\n' + marker + '\n' +
+                   'export BUILD_JOBS=' + str(jobs) + '\n' +
                    'export GOMAXPROCS=' + str(jobs) + '\n')
