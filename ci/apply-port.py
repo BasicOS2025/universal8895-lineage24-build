@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 control = Path(__file__).resolve().parents[1]
 source = Path(sys.argv[1]).resolve()
 for project in json.loads((control / 'sources.json').read_text()):
@@ -16,6 +17,19 @@ for project in json.loads((control / 'sources.json').read_text()):
         url = 'https://github.com/' + project.get('owner', 'BasicOS2025') + '/' + project['repository'] + '.git'
         subprocess.run(['git', '-C', str(folder), 'fetch', '--depth=1', url, project['revision']], check=True)
         subprocess.run(['git', '-C', str(folder), 'checkout', '--detach', '--force', project['revision']], check=True)
+# Gradle supplies this namespace, but the platform manifest merger needs it
+# explicitly in the source manifest when PhhIms is built by Soong.
+ims_manifest = source / 'packages/apps/PhhIms/app/src/main/AndroidManifest.xml'
+text = ims_manifest.read_text()
+ims_package = ET.fromstring(text).get('package')
+if ims_package is None:
+    text = text.replace('<manifest ', '<manifest package="me.phh.ims" ', 1)
+    if ET.fromstring(text).get('package') != 'me.phh.ims':
+        raise ValueError('Could not set PhhIms manifest package')
+    ims_manifest.write_text(text)
+elif ims_package != 'me.phh.ims':
+    raise ValueError('Unexpected PhhIms manifest package: ' + ims_package)
+
 board = source / 'device/samsung/dreamlte/BoardConfig.mk'
 text = board.read_text().split('# BEGIN CI GCC KERNEL BRIDGE')[0].rstrip()
 text += "\n\n# BEGIN CI GCC KERNEL BRIDGE\n"
