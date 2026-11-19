@@ -107,3 +107,14 @@ job has not yet finalized; running jobs are not cancelled by this change.
 Single-job settings also cap Go parallelism at one. In-place retries export
 NINJA_ARGS=-j1 after envsetup, covering a control shell that loaded an earlier
 job count. Already-running processes cannot receive this setting retroactively.
+
+## Dedicated GCP build host
+
+`ci/cloud-host.sh` runs the pinned S8 build in an Ubuntu 22.04 container on the
+Debian host. The persistent workspace defaults to /mnt/android, outside the small
+boot disk. Cloud defaults are 16 build/kernel jobs, an 80 GiB soft Go heap limit
+and 20 GiB ccache; GitHub defaults remain one job. Run under tmux so browser SSH
+disconnection does not end compilation. Failures wait for control-repo fixes and
+reuse objects. Results and compressed logs are copied to ~/s8-results on the boot
+disk before the VM is stopped. Local SSD workspace is disposable; download the
+verified ROM and logs before shutdown. This script does not stop the VM itself.

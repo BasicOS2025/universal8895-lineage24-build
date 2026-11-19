@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Refresh pinned trees in place and configure the GCC-built kernel bridge."""
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -38,10 +39,13 @@ if reverse.returncode != 0:
     subprocess.run(['git', '-C', str(soong), 'apply', str(patch)], check=True)
 print('Applied legacy system/vendor Make packaging compatibility', flush=True)
 
-# A running control shell may have loaded its previous -j setting already.
-# Soong reads NINJA_ARGS after its command-line options; keep in-place retries at one job.
+# Respect a cloud-specific job count while keeping the free-runner default at one.
+jobs = int(os.environ.get('BUILD_JOBS', '1'))
+if not 1 <= jobs <= 32:
+    raise ValueError('BUILD_JOBS must be between 1 and 32')
 envsetup = source / 'build/envsetup.sh'
-text = envsetup.read_text()
 marker = '# CI single-job memory limit'
-if marker not in text:
-    envsetup.write_text(text + '\n' + marker + '\nexport NINJA_ARGS="${NINJA_ARGS:-} -j1"\nexport GOMAXPROCS=1\n')
+text = envsetup.read_text().split(marker)[0].rstrip()
+envsetup.write_text(text + '\n\n' + marker + '\n' +
+                   'export NINJA_ARGS="${NINJA_ARGS:-} -j' + str(jobs) + '"\n' +
+                   'export GOMAXPROCS=' + str(jobs) + '\n')
