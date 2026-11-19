@@ -30,6 +30,14 @@ if ims_package is None:
 elif ims_package != 'me.phh.ims':
     raise ValueError('Unexpected PhhIms manifest package: ' + ims_package)
 
+ims = source / 'packages/apps/PhhIms'
+ims_patch = control / 'patches/phhims-platform.patch'
+ims_patched = subprocess.run(['git', '-C', str(ims), 'apply', '--reverse', '--check', str(ims_patch)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+if ims_patched.returncode != 0:
+    subprocess.run(['git', '-C', str(ims), 'apply', '--check', str(ims_patch)], check=True)
+    subprocess.run(['git', '-C', str(ims), 'apply', str(ims_patch)], check=True)
+print('Applied PhhIms platform build compatibility', flush=True)
+
 board = source / 'device/samsung/dreamlte/BoardConfig.mk'
 text = board.read_text().split('# BEGIN CI GCC KERNEL BRIDGE')[0].rstrip()
 text += "\n\n# BEGIN CI GCC KERNEL BRIDGE\n"

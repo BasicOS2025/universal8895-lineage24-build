@@ -1,0 +1,54 @@
+diff --git a/Android.bp b/Android.bp
+index 97fbe73..c5bd1bb 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -9,8 +9,9 @@ android_app {
+     static_libs: [
+       "com.google.android.material_material",
+       "kotlinx-coroutines-android",
++      "ImsMediaFramework",
+     ],
+-    required: ["PhhImsOverlay"],
++    required: ["PhhImsOverlay", "ImsMediaService"],
+ }
+ 
+ runtime_resource_overlay {
+diff --git a/app/src/main/java/me/phh/sip/SipHandler.kt b/app/src/main/java/me/phh/sip/SipHandler.kt
+index d95e9af..e2f68e6 100644
+--- a/app/src/main/java/me/phh/sip/SipHandler.kt
++++ b/app/src/main/java/me/phh/sip/SipHandler.kt
+@@ -65,7 +65,7 @@ class SipHandler(val ctxt: Context) {
+     }
+ 
+     @SuppressLint("MissingPermission")
+-    private val activeSubscription = subscriptionManager.activeSubscriptionInfoList[0]
++    private val activeSubscription = requireNotNull(subscriptionManager.activeSubscriptionInfoList?.firstOrNull()) { "An active subscription is required for IMS" }
+     private val imei = telephonyManager.getDeviceId(activeSubscription.simSlotIndex)
+     private val subId = activeSubscription.subscriptionId
+     private val mcc = telephonyManager.simOperator.substring(0 until 3)
+@@ -1492,7 +1492,7 @@ a=sendrecv
+                 """<sip:$myTel@$local;transport=tcp>;expires=600000;+sip.instance="$sipInstance";+g.3gpp.icsi-ref="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel";+g.3gpp.smsip;audio"""
+             val mySeqCounter = reliableSequenceCounter++
+             val ipType = if(socket.gLocalAddr() is Inet6Address) "IP6" else "IP4"
+-            val mySdp = ("""
++            val mySdp = """
+ v=0
+ o=$owner 1 2 IN $ipType ${socket.gLocalAddr().hostAddress}
+ s=phh voice call
+diff --git a/app/src/main/java/me/phh/sip/SipMessage.kt b/app/src/main/java/me/phh/sip/SipMessage.kt
+index 2face3d..15fe6a9 100644
+--- a/app/src/main/java/me/phh/sip/SipMessage.kt
++++ b/app/src/main/java/me/phh/sip/SipMessage.kt
+@@ -95,10 +95,8 @@ open class SipCommonMessage(
+     override val body: ByteArray = ByteArray(0),
+     private val autofill: Boolean = true,
+ ) : SipMessage() {
+-    override val headers: SipHeadersMap
+-    init {
+-        headers = if (autofill) completeHeaders() else headersParam
+-    }
++    override val headers: SipHeadersMap =
++        if (autofill) completeHeaders() else headersParam
+ 
+     override fun toString(): String =
+         String(toByteArray(), Charsets.US_ASCII).replace("\r\n", "\n> ")
