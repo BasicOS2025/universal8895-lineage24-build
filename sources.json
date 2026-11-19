@@ -1,7 +1,7 @@
 [
   {
     "repository": "android_device_samsung_universal8895-common",
-    "revision": "7ac86707d424d762fad3e4be8822e359589e5cb2",
+    "revision": "ab6880c18f952af86a3fb697d1fbfd0be3a1e980",
     "upstream_commit": "57bbd96d96622e5e7aaf968007b3a771120450a1",
     "upstream": "android_device_samsung_universal8895-common",
     "branch": "lineage-23.2",
