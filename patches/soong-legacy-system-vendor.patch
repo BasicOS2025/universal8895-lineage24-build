@@ -7,7 +7,7 @@
 +	// Legacy non-Treble products are packaged by Make with vendor under system.
 +	// fsgen currently requests core image variants for those vendor-only modules.
 +	if ctx.Config().KatiEnabled() && !ctx.Config().UseSoongSystemImage() &&
-+		ctx.DeviceConfig().VendorPath() == "system/vendor" {
++		proptools.String(ctx.Config().ProductVariables().VendorPath) == "system/vendor" {
 +		return false
 +	}
  	if ctx.Config().HasUnbundledBuildApps() || ctx.Config().UnbundledBuild() {

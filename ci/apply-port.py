@@ -26,6 +26,12 @@ board.write_text(text)
 # Keep Make image packaging on the legacy non-Treble system/vendor layout.
 soong = source / 'build/soong'
 patch = control / 'patches/soong-legacy-system-vendor.patch'
+target = soong / 'fsgen/filesystem_creator.go'
+text = target.read_text()
+old = 'ctx.DeviceConfig().VendorPath() == "system/vendor"'
+new = 'proptools.String(ctx.Config().ProductVariables().VendorPath) == "system/vendor"'
+if 'Legacy non-Treble products are packaged by Make' in text and old in text:
+    target.write_text(text.replace(old, new, 1))
 reverse = subprocess.run(['git', '-C', str(soong), 'apply', '--reverse', '--check', str(patch)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 if reverse.returncode != 0:
     subprocess.run(['git', '-C', str(soong), 'apply', '--check', str(patch)], check=True)
