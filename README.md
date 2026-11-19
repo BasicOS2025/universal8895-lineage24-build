@@ -25,3 +25,13 @@ The manifest records source selection; it is not a claim that the port builds.
 
 The previous Exynos 7420 ROM run was cancelled. No Exynos 8895 ROM run has been
 started by this initial repository publication.
+
+## Kernel validation
+
+KernelSU Next legacy is integrated with manual hooks and a pinned source revision.
+All three device configs passed; complete S8 kernel Image builds with Next enabled
+and KSU disabled both passed in Actions run 44379364933. Exact compatibility
+backports from that successful build are committed. S8+/Note8 full kernel builds,
+Android 17 ROM builds and phone boot/root testing remain outstanding.
+
+https://github.com/BasicOS2025/android_kernel_samsung_universal8895/actions/runs/44379364933
