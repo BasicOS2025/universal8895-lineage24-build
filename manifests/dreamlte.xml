@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <manifest>
-  <project path="device/samsung/universal8895-common" name="BasicOS2025/android_device_samsung_universal8895-common" remote="github" revision="7d6ad293dbdcc73c1f7658dbcf18125d974a3458" clone-depth="1" />
+  <project path="device/samsung/universal8895-common" name="BasicOS2025/android_device_samsung_universal8895-common" remote="github" revision="13f93f7adec178402bc18e96676eeebd64cace59" clone-depth="1" />
   <project path="device/samsung/dreamlte" name="BasicOS2025/android_device_samsung_dreamlte" remote="github" revision="ef2fdff13338432e501c4d1c58ee10ec3a339722" clone-depth="1" />
   <project path="hardware/samsung" name="BasicOS2025/android_hardware_samsung_universal8895" remote="github" revision="315bb479d4af6725ac5d8521ad2a998809d75690" clone-depth="1" />
   <project path="kernel/samsung/universal8895" name="BasicOS2025/android_kernel_samsung_universal8895" remote="github" revision="3ac10c9f390b0edee601791cb6f655e96eef9591" clone-depth="1" />
