@@ -71,3 +71,16 @@ progress within a live runner; a new Actions job does not restore the full Andro
 output tree. Ccache is restored and saved separately. Logs/manifests are uploaded
 on failure; ROM artifacts are published only after ZIP/target/boot validation.
 The first run is experimental and may expose further platform/HAL build errors.
+
+## Runner storage
+
+The first ROM run (44485226964) exhausted the runner disk during sync and the
+runner could not upload logs or compiler cache. No compiler error was recorded.
+Subsequent runs reclaim the unused tool cache, use shallow partial Git clones,
+and build on a zstd-compressed Btrfs filesystem backed only by disposable loop
+files. Free space on a separate /mnt filesystem is combined when available.
+Host disk partitions are never formatted. A monitor reserves host/log space and
+terminates the build cleanly before storage exhaustion kills the Actions agent.
+Compression increases effective capacity but does not guarantee this free runner
+has enough space for the complete Android 17 build. A terminated runner's full
+source/output tree cannot be resumed; only a successfully saved cache survives.

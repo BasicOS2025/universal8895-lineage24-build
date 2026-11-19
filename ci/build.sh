@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 control="$GITHUB_WORKSPACE"
-source_dir="$RUNNER_TEMP/universal8895-lineage24"
+source_dir="$RUNNER_TEMP/rom-volume/android"
 logs="$RUNNER_TEMP/universal8895-logs"
 mkdir -p "$source_dir" "$logs" "$RUNNER_TEMP/universal8895-roms"
 exec > >(tee -a "$logs/session.log") 2>&1
 cd "$source_dir"
-repo init -u https://github.com/LineageOS/android.git -b lineage-24.0 --depth=1 --git-lfs --no-clone-bundle
+repo init -u https://github.com/LineageOS/android.git -b lineage-24.0 --depth=1 --partial-clone --clone-filter=blob:limit=10M --git-lfs --no-clone-bundle
 mkdir -p .repo/local_manifests
 cp "$control/manifests/dreamlte.xml" .repo/local_manifests/
 # Emit progress while fetching; fail on a real sync error.
