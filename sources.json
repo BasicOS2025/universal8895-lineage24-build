@@ -33,7 +33,7 @@
   },
   {
     "repository": "android_hardware_samsung_universal8895",
-    "revision": "ca1933d4e834ff8e82ad178be09bb332d217110a",
+    "revision": "c1bb1b4228662827a38c43e71d332a54ff2437dd",
     "upstream_commit": "2abfdb1a286b11bd29140ae8ae61ac6ad0e81fb1",
     "upstream": "android_hardware_samsung",
     "branch": "lineage-23.0",

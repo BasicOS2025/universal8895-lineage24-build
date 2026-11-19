@@ -2,7 +2,7 @@
 <manifest>
   <project path="device/samsung/universal8895-common" name="BasicOS2025/android_device_samsung_universal8895-common" remote="github" revision="49d28c1a6eb3c5c9be3317c37d303c03d94dc833" clone-depth="1" />
   <project path="device/samsung/dreamlte" name="BasicOS2025/android_device_samsung_dreamlte" remote="github" revision="ef2fdff13338432e501c4d1c58ee10ec3a339722" clone-depth="1" />
-  <project path="hardware/samsung" name="BasicOS2025/android_hardware_samsung_universal8895" remote="github" revision="ca1933d4e834ff8e82ad178be09bb332d217110a" clone-depth="1" />
+  <project path="hardware/samsung" name="BasicOS2025/android_hardware_samsung_universal8895" remote="github" revision="c1bb1b4228662827a38c43e71d332a54ff2437dd" clone-depth="1" />
   <project path="kernel/samsung/universal8895" name="BasicOS2025/android_kernel_samsung_universal8895" remote="github" revision="3ac10c9f390b0edee601791cb6f655e96eef9591" clone-depth="1" />
   <project path="vendor/samsung" name="BasicOS2025/proprietary_vendor_samsung_universal8895" remote="github" revision="de4907046a7ef27341da87acf0aa2d4572c44aee" clone-depth="1" />
   <project path="device/samsung_slsi/sepolicy" name="LineageOS/android_device_samsung_slsi_sepolicy" remote="github" revision="224e135300fbb07ee12968cc57ad053a267e3ce4" clone-depth="1" />
