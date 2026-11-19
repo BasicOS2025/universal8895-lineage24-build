@@ -47,5 +47,4 @@ envsetup = source / 'build/envsetup.sh'
 marker = '# CI single-job memory limit'
 text = envsetup.read_text().split(marker)[0].rstrip()
 envsetup.write_text(text + '\n\n' + marker + '\n' +
-                   'export NINJA_ARGS="${NINJA_ARGS:-} -j' + str(jobs) + '"\n' +
                    'export GOMAXPROCS=' + str(jobs) + '\n')
