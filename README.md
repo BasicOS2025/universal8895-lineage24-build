@@ -56,3 +56,18 @@ Source checks passed for all three defconfigs: required cgroup controllers,
 XZ initramfs, ext4, seccomp, Binder devices and SELinux. Three-model Next-enabled
 Image+DTB compilation is tracked in kernel Actions; source checks alone do not
 validate boot. Raw kernel artifacts are not flashable boot/recovery images.
+
+## First Galaxy S8 ROM build
+
+Dispatch `.github/workflows/build.yml` to build `lineage_dreamlte` userdebug with
+no GApps. The S8-only manifest also pins the missing PhhIms source. Linux 4.4
+is compiled from the pinned source with GCC 11, Next enabled, before the Android
+build. Its Image and DTBs feed the legacy Samsung boot packer. This explicit
+bridge avoids silently passing the kernel to Android 17's LLVM-only defaults.
+
+A failed compile waits up to 45 minutes for a build-control update while retaining
+all current objects, then retries in place. No clean command is used. This retains
+progress within a live runner; a new Actions job does not restore the full Android
+output tree. Ccache is restored and saved separately. Logs/manifests are uploaded
+on failure; ROM artifacts are published only after ZIP/target/boot validation.
+The first run is experimental and may expose further platform/HAL build errors.
