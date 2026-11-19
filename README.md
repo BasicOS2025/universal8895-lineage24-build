@@ -43,3 +43,16 @@ of passing unsupported --dt flags to modern mkbootimg. A host CI checks 70-DTB
 tables, payload offsets, legacy header load addresses and SHA-1, and malformed
 first-stage ramdisk rejection using the 8895 SYSTEM block path. This does not
 replace a full ROM build or a physical boot test.
+
+## Early-boot compatibility
+
+The kernel accepts cpuset_v2_mode with the upstream v2-on-v1 behavior, rather
+than rejecting Android 17's mount options. Common init uses noprefix cpuset
+files and leaves controller mounts to libprocessgroup. Vendor cgroups select
+legacy v1 memory/freezer and supported CPU controllers; unsupported schedtune
+overrides are removed. Watchdogd is installed at its actual Android 17 path.
+
+Source checks passed for all three defconfigs: required cgroup controllers,
+XZ initramfs, ext4, seccomp, Binder devices and SELinux. Three-model Next-enabled
+Image+DTB compilation is tracked in kernel Actions; source checks alone do not
+validate boot. Raw kernel artifacts are not flashable boot/recovery images.
