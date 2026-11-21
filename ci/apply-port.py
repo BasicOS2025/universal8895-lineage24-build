@@ -9,8 +9,6 @@ import xml.etree.ElementTree as ET
 control = Path(__file__).resolve().parents[1]
 source = Path(sys.argv[1]).resolve()
 for project in json.loads((control / 'sources.json').read_text()):
-    if project['path'] in ('device/samsung/dream2lte', 'device/samsung/greatlte'):
-        continue
     folder = source / project['path']
     current = subprocess.check_output(['git', '-C', str(folder), 'rev-parse', 'HEAD'], text=True).strip()
     if current != project['revision']:
@@ -38,13 +36,14 @@ if ims_patched.returncode != 0:
     subprocess.run(['git', '-C', str(ims), 'apply', str(ims_patch)], check=True)
 print('Applied PhhIms platform build compatibility', flush=True)
 
-board = source / 'device/samsung/dreamlte/BoardConfig.mk'
-text = board.read_text().split('# BEGIN CI GCC KERNEL BRIDGE')[0].rstrip()
-text += "\n\n# BEGIN CI GCC KERNEL BRIDGE\n"
-text += "TARGET_FORCE_PREBUILT_KERNEL := true\n"
-text += "TARGET_PREBUILT_KERNEL := out/kernel-ci/arch/arm64/boot/Image\n"
-text += "EXYNOS8895_DTB_DIR := $(abspath out/kernel-ci/arch/arm64/boot/dts/exynos)\n"
-board.write_text(text)
+for target in ('dreamlte', 'dream2lte', 'greatlte'):
+    board = source / f'device/samsung/{target}/BoardConfig.mk'
+    text = board.read_text().split('# BEGIN CI GCC KERNEL BRIDGE')[0].rstrip()
+    text += "\n\n# BEGIN CI GCC KERNEL BRIDGE\n"
+    text += "TARGET_FORCE_PREBUILT_KERNEL := true\n"
+    text += "TARGET_PREBUILT_KERNEL := out/kernel-ci/arch/arm64/boot/Image\n"
+    text += "EXYNOS8895_DTB_DIR := $(abspath out/kernel-ci/arch/arm64/boot/dts/exynos)\n"
+    board.write_text(text)
 
 # Keep Make image packaging on the legacy non-Treble system/vendor layout.
 soong = source / 'build/soong'

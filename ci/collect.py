@@ -26,5 +26,12 @@ with package.open('rb') as stream:
     for chunk in iter(lambda: stream.read(1024 * 1024), b''):
         hasher.update(chunk)
 digest = hasher.hexdigest()
-(output / 'SHA256SUMS').write_text(f'{digest}  {package.name}\n')
+checksums = output / 'SHA256SUMS'
+entries = {}
+if checksums.exists():
+    for line in checksums.read_text().splitlines():
+        old_digest, old_name = line.split('  ', 1)
+        entries[old_name] = old_digest
+entries[package.name] = digest
+checksums.write_text(''.join(f'{entries[name]}  {name}\n' for name in sorted(entries)))
 print('Validated ROM archive:', package.name)

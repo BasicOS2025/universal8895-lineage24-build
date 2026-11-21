@@ -57,6 +57,16 @@ XZ initramfs, ext4, seccomp, Binder devices and SELinux. Three-model Next-enable
 Image+DTB compilation is tracked in kernel Actions; source checks alone do not
 validate boot. Raw kernel artifacts are not flashable boot/recovery images.
 
+## GCP LineageOS 24 Android 17 builds
+
+The GCP runner now syncs the all-device manifest and builds `dreamlte`,
+`dream2lte`, and `greatlte` sequentially. The pinned Linux 4.4 kernel Image and
+all three DTBs are built once and reused by the legacy Samsung boot packer for
+each target. The persistent `/mnt/android/out` tree is reused; the build script
+does not run a clean command. Each validated ROM and its checksum is saved to
+`/home/taskinkose/s8-results` before the VM is stopped. This is a build and
+archive validation, not a phone boot test.
+
 ## First Galaxy S8 ROM build
 
 Dispatch `.github/workflows/build.yml` to build `lineage_dreamlte` userdebug with

@@ -22,16 +22,15 @@ if [[ ! -d .repo ]]; then
   repo init -u https://github.com/LineageOS/android.git -b lineage-24.0 --depth=1 --partial-clone --clone-filter=blob:limit=10M --git-lfs --no-clone-bundle
 fi
 mkdir -p .repo/local_manifests
-cp "$control/manifests/dreamlte.xml" .repo/local_manifests/
-if [[ ! -f "$root/source-sync-complete" ]]; then
-  synced=false
-  for retry in 1 2 3; do
-    if repo sync -c -j8 --no-clone-bundle --no-tags --fail-fast 2>&1 | tee -a "$logs/sync.log"; then synced=true; break; fi
-    sleep 15
-  done
-  [[ "$synced" == true ]]
-  touch "$root/source-sync-complete"
-fi
+rm -f .repo/local_manifests/dreamlte.xml
+cp "$control/manifests/universal8895.xml" .repo/local_manifests/
+synced=false
+for retry in 1 2 3; do
+  if repo sync -c -j8 --no-clone-bundle --no-tags --fail-fast 2>&1 | tee -a "$logs/sync.log"; then synced=true; break; fi
+  sleep 15
+done
+[[ "$synced" == true ]]
+touch "$root/source-sync-complete"
 repo manifest -r -o "$logs/resolved-manifest.xml"
 for attempt in $(seq 1 50); do
   python3 "$control/ci/apply-port.py" "$source_dir"
@@ -39,28 +38,37 @@ for attempt in $(seq 1 50); do
   git -C build/soong diff --binary > "$logs/applied-soong.patch"
   df -h "$root" > "$logs/disk-latest.txt"
   free -h > "$logs/memory-latest.txt"
-  echo "Building dreamlte, attempt $attempt, jobs=$BUILD_JOBS"
+  echo "Building dreamlte, dream2lte and greatlte, attempt $attempt, jobs=$BUILD_JOBS"
   set +e
-  (
-    set -e
-    bash "$control/ci/build-kernel.sh" "$source_dir" "$logs"
-    set +u
-    source build/envsetup.sh
-    source vendor/lineage/vars/aosp_target_release
-    lunch "lineage_dreamlte-${aosp_target_release}-userdebug"
-    m -j"$BUILD_JOBS" bacon
-  ) 2>&1 | tee "$logs/dreamlte-attempt-${attempt}.log"
+  bash "$control/ci/build-kernel.sh" "$source_dir" "$logs" 2>&1 | tee "$logs/kernel-attempt-${attempt}.log"
   result=${PIPESTATUS[0]}
   set -e
   if [[ "$result" == 0 ]]; then
-    python3 "$control/ci/collect.py" "$source_dir/out/target/product/dreamlte" "$root/results"
+    for target in dreamlte dream2lte greatlte; do
+      echo "Building LineageOS 24 Android 17 target: $target"
+      set +e
+      (
+        set -e
+        source build/envsetup.sh
+        source vendor/lineage/vars/aosp_target_release
+        lunch "lineage_${target}-${aosp_target_release}-userdebug"
+        m -j"$BUILD_JOBS" bacon
+      ) 2>&1 | tee "$logs/${target}-attempt-${attempt}.log"
+      result=${PIPESTATUS[0]}
+      set -e
+      if [[ "$result" != 0 ]]; then break; fi
+      python3 "$control/ci/collect.py" "$source_dir/out/target/product/$target" "$root/results"
+    done
+  fi
+  if [[ "$result" == 0 ]]; then
     cp "$logs/resolved-manifest.xml" "$logs/control-commit.txt" "$root/results/"
     echo SUCCESS > "$root/build-status"
     ccache -s
     exit 0
   fi
   echo "WAITING_FOR_FIX exit=$result attempt=$attempt" | tee "$root/build-status"
-  tail -n 100 "$logs/dreamlte-attempt-${attempt}.log" > "$logs/latest-error.txt"
+  failed_log=$(find "$logs" -maxdepth 1 -type f -name '*-attempt-'"$attempt"'.log' -printf '%T@ %p\n' | sort -nr | head -n1 | cut -d' ' -f2-)
+  [[ -n "$failed_log" ]] && tail -n 100 "$failed_log" > "$logs/latest-error.txt"
   revision=$(git -C "$control" rev-parse HEAD)
   changed=false
   for poll in $(seq 1 90); do
